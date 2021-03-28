@@ -1,3 +1,4 @@
+
 .ui-datepicker {
   width: 12rem%;
   height: 12rem;
@@ -21,3 +22,23 @@
 .ui-datepicker-next {
   padding: 10px 10px 25px 10px;
 }
+
+/* * {
+    border: 1px solid red;
+} */
+
+#search-box-container {
+    border-radius: 0%;
+}
+
+
+.is-active a {
+    background-color: #F5F5F5 !important;
+    color: #003ea2 !important;
+}
+
+#search-history-items div:hover {
+    background-color: rgb(242,242,242);
+}
+
+

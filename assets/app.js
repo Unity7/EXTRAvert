@@ -30,7 +30,8 @@ function getSearchTerm() {
   searchInput = $searchInput.val();
   // console.log(searchInput);
 
-  getFlights();
+  // Note: in each function below make you tab's li class active to change tab highlighted
+  // getFlights()
   // getEvents()
   // getHotels()
 }

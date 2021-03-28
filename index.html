@@ -5,76 +5,97 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EXTRAvert</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.2/css/bulma.min.css">
     <link rel="stylesheet" href="./assets/styles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.2/css/bulma.min.css">
+    
 </head>
-<body>
+<body class='has-background-black-ter'>
     <!------------Header Section-------------->
-    <header class="has-text-centered">EXTRAvert - Event Dashboard</header>
+    <header class="title is-2 has-text-weight-light has-text-centered has-background-black-ter has-text-light py-4">EXTRAvert - Event Dashboard</header>
 
     <!------------Main Section---------------->
-<main>
+<main class=" is-family-code">
         <!------------Main Container------------>
 <div class="columns" id="main-container">
 
             <!------------Search Box Container------------>
-    <div class="column is-one-third" id='search-box-container'>
+    <div class="column is-one-third notification has-background-grey-lighter mb-0" id='search-box-container'>
 
                     <!------------Search Box------------>
-        <div class="" id="search-box-div"><p>Search for a City:</p>
+        <div class='column' id="search-box-div"><p class="subtitle is-4 mb-1">Search for a City:</p>
 
              <!------------Search Box Input------------>
-            <div class='' id='search-div'>
-                <form>
-                    <input class='' type='text' id='search-input'></input>
-                    <button class=''type='submit' id='search-btn'><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+            <div id='search-div'>
+                <form class='field has-addons'>
+                  <div class="control">
+                    <input class='input' type='text' id='search-input'></input>
+                  </div>
+                  <div class="control">
+                    <button class='button is-link'type='submit' id='search-btn'><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
                       <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
                     </svg></button>
+                  </div>
                 </form>
     </div>
     </div>
 
      <!------------Search History Section------------>
     <div class="column" id='search-history'>
-        <div id="search-history-header">Search History</div>
+        <div id="search-history-header" class="subtitle is-5 mb-1">Search History</div>
 
              <!------------Search History Items------------>
  
-             <div class="column" id='search-history-items'>
+             <div id='search-history-items'>
              <!------------Placeholder Items------------>
-        <div class="card">Los Angeles</div>
-        <div class="card">Orange County</div>
-        <div class="card">San Diego</div>
-        <div class="card">Houston</div>
-        <div class="card">New York</div>
+        <div class="card my-1 py-3 px-3">Los Angeles</div>
+        <div class="card my-1 py-3 px-3">Orange County</div>
+        <div class="card my-1 py-3 px-3">San Diego</div>
+        <div class="card my-1 py-3 px-3">Houston</div>
+        <div class="card my-1 py-3 px-3">New York</div>
         </div>
         </div>
     </div>
 
          <!------------Results Section------------>
-    <div class="column is-two-thirds" id='results-main'>
+
+
+    <div class="column is-two-thirds has-text-dark px-0 mt-0 has-background-danger-light">
+
 
                  <!------------Results Header------------>
-        <div class="columns" id="results-header">
-            <div class="column has-text-centered" id="events-btn">Events</div>
-            <div class="column has-text-centered" id='flights-btn'>Flights</div>
-            <div class="column has-text-centered" id='hotels-btn'>Hotels</div>
-        </div>
+                <div class="tabs is-boxed is-medium is-fullwidth pb-0 mb-0">
+                  <ul class='has-text-primary-light'>
+                    <li class="is-active">
+                      <a class='py-3' id="events-btn" href="#">Events</a>
+                    </li>
+                    <li>
+                      <a class='py-3' id='flights-btn' href="#">Flights</a> 
+                    </li>
+                    <li>
+                      <a class='py-3' id='hotels-btn' href="#">Hotels</a>
+                    </li>
+                  </ul>
+                </div>
+                <div class="columns" id="results-header-2">
+                </div>
+
 
         <div class="columns" id="results-header-2">
         </div>
                          <!------------Results UI / Items------------>
-        <div class="columns" id="results-container">
-            <div class="column" id='result-items'>
+        <div class="columns pt-0" id="results-container">
+            <div class="column has-background-light" id='result-items'>
 
                   <!------------Placeholder Items------------>
-              <!-- <div>
+
+              <!-- <div class="display-results">
                 <div class="has-text-centered header">
                 The XX</div>
                 <div class="has-text-centered">Time: 5PM</div>
                 <div class="has-text-centered">Venue: The Theather</div>
                 <div style="text-align:center;"><img src="https://i1.sndcdn.com/artworks-000665393401-02cp90-t500x500.jpg"></div>
             </div> -->
+
 
         </div>
     </div>
@@ -87,7 +108,7 @@
 
 </main>
 
-<footer class="footer">
+<footer class="footer subtitle is-4 is-italic has-text-weight-light has-text-centered has-background-black-ter has-text-light">
     <div class="content has-text-centered">
       <p>
         The best event decision application
