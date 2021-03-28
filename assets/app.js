@@ -70,7 +70,7 @@ function getFlights() {
     //set the new searchTerm
     searchTerm = newCity;
   } else {
-    return;
+    searchTerm = searchInput;
   }
 
   var placeSettings = {
@@ -88,28 +88,35 @@ function getFlights() {
   };
 
   $.ajax(placeSettings).done(function (response) {
-    destinationCity = response.Places[0].PlaceId;
+    //if the response comes back invalid city display error
+    if (response.Places[0] === undefined) {
+      message = "Please enter a valid city";
+      displayError(message);
+    } else {
+      destinationCity = response.Places[0].PlaceId;
 
-    // Nested Browse Routes Fetch
-    var settings = {
-      async: true,
-      crossDomain: true,
-      url:
-        "https://skyscanner-skyscanner-flight-search-v1.p.rapidapi.com/apiservices/browseroutes/v1.0/US/USD/en-US/LAXA-sky/" +
-        destinationCity +
-        "/" +
-        newFlightDate,
-      method: "GET",
-      headers: {
-        "x-rapidapi-key": "066dae2798mshc488ff29eea61bdp1db94fjsnb26d76bdd42c",
-        "x-rapidapi-host":
-          "skyscanner-skyscanner-flight-search-v1.p.rapidapi.com",
-      },
-    };
+      // Nested Browse Routes Fetch
+      var settings = {
+        async: true,
+        crossDomain: true,
+        url:
+          "https://skyscanner-skyscanner-flight-search-v1.p.rapidapi.com/apiservices/browseroutes/v1.0/US/USD/en-US/LAXA-sky/" +
+          destinationCity +
+          "/" +
+          newFlightDate,
+        method: "GET",
+        headers: {
+          "x-rapidapi-key":
+            "066dae2798mshc488ff29eea61bdp1db94fjsnb26d76bdd42c",
+          "x-rapidapi-host":
+            "skyscanner-skyscanner-flight-search-v1.p.rapidapi.com",
+        },
+      };
 
-    $.ajax(settings).done(function (response) {
-      displayFlights(response);
-    });
+      $.ajax(settings).done(function (response) {
+        displayFlights(response);
+      });
+    }
   });
 }
 
@@ -167,6 +174,8 @@ function getFlightDate() {
       removeAll();
     }, 2000);
   } else {
+    $(".is-active").removeClass("is-active");
+    $("#flights-header").addClass("is-active");
     //creates div for header
     var div = $("<div>").addClass("display is-full column");
 
