@@ -88,8 +88,6 @@ function getFlights() {
   };
 
   $.ajax(placeSettings).done(function (response) {
-    console.log(response);
-
     destinationCity = response.Places[0].PlaceId;
 
     // Nested Browse Routes Fetch
@@ -110,8 +108,6 @@ function getFlights() {
     };
 
     $.ajax(settings).done(function (response) {
-      console.log(response);
-
       displayFlights(response);
     });
   });
@@ -164,7 +160,7 @@ function displayFlights(response) {
 
 // ------ Function to create date picker for Flights ------ //
 function getFlightDate() {
-  if ((searchTerm = "" || searchTerm === null || searchTerm === undefined)) {
+  if (searchInput === undefined) {
     errorMessage = "Please Select A City";
     displayError(errorMessage);
     setTimeout(function () {
@@ -182,7 +178,6 @@ function getFlightDate() {
 
     //sets the default value to today's date
     var todayDate = moment().format("MM/DD/YYYY");
-    console.log(todayDate);
     dateInput.val(todayDate);
     dateInput.datepicker({
       minDate: 0,
