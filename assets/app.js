@@ -51,39 +51,56 @@ function removeAll() {
   $(".display").remove();
 }
 
+// ------------------------------------------------ FLIGHTS SECTION ------------------------------------------------ //
+
 //Uses API to get Flights//
 function getFlights() {
-  if ((searchTerm = "" || searchTerm === null || searchTerm === undefined)) {
-    errorMessage = "Please Select A City";
-    displayError(errorMessage);
-    setTimeout(function () {
-      removeAll();
-    }, 3000);
+  //get the date input
+  $flightDate = $("#date-input").val();
+
+  //convert date input to YYYY-MM-DD to use in query
+  var newFlightDate = moment($flightDate).format("YYYY-MM-DD");
+  console.log(newFlightDate);
+
+  //check if the search term has a space between the city words
+  if (searchInput.includes(" ")) {
+    //replace space with %20 for query
+    var newCity = searchInput.replace(" ", "%20");
+
+    //set the new searchTerm
+    searchTerm = newCity;
   } else {
-    //get the date input
-    $flightDate = $("#date-input").val();
+    return;
+  }
 
-    //convert date input to YYYY-MM-DD to use in query
-    var newFlightDate = moment($flightDate).format("YYYY-MM-DD");
-    console.log(newFlightDate);
+  var placeSettings = {
+    async: true,
+    crossDomain: true,
+    url:
+      "https://skyscanner-skyscanner-flight-search-v1.p.rapidapi.com/apiservices/autosuggest/v1.0/US/USD/en-US/?query=" +
+      searchTerm,
+    method: "GET",
+    headers: {
+      "x-rapidapi-key": "066dae2798mshc488ff29eea61bdp1db94fjsnb26d76bdd42c",
+      "x-rapidapi-host":
+        "skyscanner-skyscanner-flight-search-v1.p.rapidapi.com",
+    },
+  };
 
-    //check if the search term has a space between the city words
-    if (searchInput.includes(" ")) {
-      //replace space with %20 for query
-      var newCity = searchInput.replace(" ", "%20");
+  $.ajax(placeSettings).done(function (response) {
+    console.log(response);
 
-      //set the new searchTerm
-      searchTerm = newCity;
-    } else {
-      return;
-    }
+    destinationCity = response.Places[0].PlaceId;
 
-    var placeSettings = {
+    // Nested Browse Routes Fetch
+    var settings = {
       async: true,
       crossDomain: true,
       url:
-        "https://skyscanner-skyscanner-flight-search-v1.p.rapidapi.com/apiservices/autosuggest/v1.0/US/USD/en-US/?query=" +
-        searchTerm,
+        "https://skyscanner-skyscanner-flight-search-v1.p.rapidapi.com/apiservices/browseroutes/v1.0/US/USD/en-US/LAXA-sky/" +
+        destinationCity +
+        "/" +
+        newFlightDate,
       method: "GET",
       headers: {
         "x-rapidapi-key": "066dae2798mshc488ff29eea61bdp1db94fjsnb26d76bdd42c",
@@ -92,38 +109,15 @@ function getFlights() {
       },
     };
 
-    $.ajax(placeSettings).done(function (response) {
+    $.ajax(settings).done(function (response) {
       console.log(response);
 
-      destinationCity = response.Places[0].PlaceId;
-
-      // Nested Browse Routes Fetch
-      var settings = {
-        async: true,
-        crossDomain: true,
-        url:
-          "https://skyscanner-skyscanner-flight-search-v1.p.rapidapi.com/apiservices/browseroutes/v1.0/US/USD/en-US/LAXA-sky/" +
-          destinationCity +
-          "/" +
-          newFlightDate,
-        method: "GET",
-        headers: {
-          "x-rapidapi-key":
-            "066dae2798mshc488ff29eea61bdp1db94fjsnb26d76bdd42c",
-          "x-rapidapi-host":
-            "skyscanner-skyscanner-flight-search-v1.p.rapidapi.com",
-        },
-      };
-
-      $.ajax(settings).done(function (response) {
-        console.log(response);
-
-        displayFlights(response);
-      });
+      displayFlights(response);
     });
+  });
 
-    //fetch Data
-  }
+  //fetch Data
+  // }
   //display Data
   // displayResults(data);
 }
@@ -173,6 +167,55 @@ function displayFlights(response) {
   $resultItems.append($divContainer);
 }
 
+// ------ Function to create date picker for Flights ------ //
+function getFlightDate() {
+  if ((searchTerm = "" || searchTerm === null || searchTerm === undefined)) {
+    errorMessage = "Please Select A City";
+    displayError(errorMessage);
+    setTimeout(function () {
+      removeAll();
+    }, 2000);
+  } else {
+    //creates div for header
+    var div = $("<div>").addClass("display is-full column");
+
+    var dateDiv = $("<div>").addClass("display");
+
+    var dateInput = $("<input>").addClass("display");
+    dateInput.attr("id", "date-input");
+    dateInput.css("width", "25%");
+
+    //sets the default value to today's date
+    var todayDate = moment().format("MM/DD/YYYY");
+    console.log(todayDate);
+    dateInput.val(todayDate);
+    dateInput.datepicker({
+      minDate: 0,
+    });
+
+    dateDiv.append(dateInput);
+    div.append(dateDiv);
+
+    var $btnDiv = $("<button>").addClass("display");
+    $btnDiv.text("Search");
+
+    div.append($btnDiv);
+
+    $headerDiv = $("<div>").addClass("display column");
+
+    text = "Select The Departure Date";
+    $header = $("<h2>").addClass("display");
+    $header.append(text);
+    $headerDiv.append($header);
+
+    div.prepend($headerDiv);
+    $resultsHeaderSearch.append(div);
+
+    $btnDiv.on("click", getFlights);
+  }
+}
+
+// ------------------------------------------------ END OF FLIGHTS SECTION ------------------------------------------------ //
 //Uses API to get Events//
 function getEvents() {
   console.log("Getting Events");
@@ -193,45 +236,6 @@ function displayResults(data) {
   console.log("Displaying Results");
 }
 
-// ------ Function to create date picker for Flights ------ //
-function getFlightDate() {
-  //creates div for header
-  var div = $("<div>").addClass("display is-full column");
-
-  var dateDiv = $("<div>").addClass("display");
-
-  var dateInput = $("<input>").addClass("display");
-  dateInput.attr("id", "date-input");
-  dateInput.css("width", "25%");
-
-  //sets the default value to today's date
-  var todayDate = moment().format("MM/DD/YYYY");
-  console.log(todayDate);
-  dateInput.val(todayDate);
-  dateInput.datepicker({
-    minDate: 0,
-  });
-
-  dateDiv.append(dateInput);
-  div.append(dateDiv);
-
-  var $btnDiv = $("<button>").addClass("display");
-  $btnDiv.text("Search");
-
-  div.append($btnDiv);
-
-  $headerDiv = $("<div>").addClass("display column");
-
-  text = "Select The Departure Date";
-  $header = $("<h2>").addClass("display");
-  $header.append(text);
-  $headerDiv.append($header);
-
-  div.prepend($headerDiv);
-  $resultsHeaderSearch.append(div);
-
-  $btnDiv.on("click", getFlights);
-}
 //  -----------------------------  Event Listeners ----------------------------- //
 $searchButton.on("click", getSearchTerm);
 $flightsBtn.on("click", getFlightDate);
