@@ -31,7 +31,7 @@ function getSearchTerm() {
   // console.log(searchInput);
 
   // Note: in each function below make you tab's li class active to change tab highlighted
-  // getFlights()
+  // getFlights();
   // getEvents()
   // getHotels()
 }
@@ -47,7 +47,7 @@ function displayError(message) {
   $resultItems.append($messageDiv);
 }
 
-//function to target anything with class Display to be removed//  CLEAR ALL DYNAMIC HTML
+//function to target anything with class "display" to be removed//  CLEAR ALL DYNAMIC HTML
 function removeAll() {
   $(".display").remove();
 }
@@ -61,7 +61,6 @@ function getFlights() {
 
   //convert date input to YYYY-MM-DD to use in query
   var newFlightDate = moment($flightDate).format("YYYY-MM-DD");
-  console.log(newFlightDate);
 
   //check if the search term has a space between the city words
   if (searchInput.includes(" ")) {
@@ -116,11 +115,6 @@ function getFlights() {
       displayFlights(response);
     });
   });
-
-  //fetch Data
-  // }
-  //display Data
-  // displayResults(data);
 }
 
 // ------  displays the flight reponse into the results section ------  //
