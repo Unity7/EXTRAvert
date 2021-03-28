@@ -1,3 +1,28 @@
+
+.ui-datepicker {
+  width: 12rem%;
+  height: 12rem;
+  margin-left: 50px;
+  background-color: rgb(199, 199, 199);
+}
+.ui-icon {
+  width: 16px;
+  height: 16px;
+  /***    width:32px;
+    height:32px; ******/
+}
+.ui-datepicker td span,
+.ui-datepicker td a {
+  padding: 10px 5px !important;
+}
+
+.ui-datepicker-prev {
+  padding: 10px 10px 25px 10px;
+}
+.ui-datepicker-next {
+  padding: 10px 10px 25px 10px;
+}
+
 /* * {
     border: 1px solid red;
 } */
@@ -15,4 +40,5 @@
 #search-history-items div:hover {
     background-color: rgb(242,242,242);
 }
+
 
