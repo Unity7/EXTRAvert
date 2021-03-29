@@ -48,7 +48,7 @@ function getSearchTerm() {
 
     // Note: in each function below make you tab's li class active to change tab highlighted
     // getFlights();
-    // getEvents()
+    getEvents(searchInput)
     // getHotels()
   } else if ($searchInput.val() === "") {
     message = "Please enter a city into the search";
@@ -274,6 +274,10 @@ function getFlightDate() {
 
 // ------------------------------------------------ END OF FLIGHTS SECTION ------------------------------------------------ //
 
+
+
+
+
 // ------------------------------------------------ SEARCH INPUT FORMATTING SECTION ------------------------------------------------ //
 
 function capitalizeSearchInput(string) {
@@ -340,13 +344,84 @@ function deleteSearchHistory() {
 
 // ------------------------------------------------ END OF LOCAL STORAGE SECTION ------------------------------------------------ //
 
-//Uses API to get Events//
-function getEvents() {
-  console.log("Getting Events");
 
-  //display Data
-  // displayResults(data);
-}
+// ------------------------------------------------ EVENTS SECTION ------------------------------------------------ //
+// function to get events with the ticketmaster API
+function getEvents() {
+  console.log("getting events")
+  //   get events my by city in asc order from date
+fetch("https://app.ticketmaster.com/discovery/v2/events.json?apikey=5UPSIDMJWuJXOmCp87P78yjbhoxplVMG&startDateTime=2021-03-01T14:00:00Z&city=" + searchInput + "&sort=date,asc")
+.then(response => response.json()
+.then(data => {
+    let eventsArr = data._embedded.events
+    console.log(eventsArr)
+  displayEvents(eventsArr)
+  })
+.catch(error => console.log('error', error)))
+};
+
+// function to display results 
+function displayEvents(eventsArr){
+  for(let i = 0; i < 10; i++){
+    let eventEl = eventsArr[i];
+    let eventName = eventEl.name;
+    let eventDesciption = eventEl.info;
+   // TODO: condition for if there is no value 
+    let eventDate = eventEl.dates.start.localDate;
+    let ageRest = eventEl.ageRestrictions.legalAgeEnforced;
+    let eventStatus = eventEl.dates.status.code;
+    let bookLink = eventEl.url;
+    let eventImg = eventEl.images[0].url;
+
+
+    
+    // create layout containter  
+    $eventResultDiv = $("<div>").addClass("display-results display-events");
+    $cardDiv = $("<div>").addClass("card");
+    $cardContentDiv = $("<div>").addClass("card-content event-card");
+    // append card-content > card > resultDiv
+    $cardDiv.append($cardContentDiv);
+    $eventResultDiv.append($cardDiv);
+
+    // image
+    $imgContainer = $("div").addClass("event-image-container");
+    $eventImg = $("<img>").addClass("event-image").attr("src", eventImg);
+    $imgContainer.append($eventImg);
+    $cardContentDiv.append($imgContainer)
+
+    // event details
+    $eventContentDiv = $("<div>").addClass("event-content");
+    $eventTitle = $("<h3>").addClass("event-title title is-5");
+    $eventDesc = $("<p>").addClass("event-desc");
+    $eventStatus = $("<p>").addClass("event-status");
+    $bookBtn = $("<button>").addClass("button mr-5 is-link");
+     // append event details into the event content div
+     $eventContentDiv.append($eventTitle);
+     $eventContentDiv.append($eventDesc);
+     $eventContentDiv.append($eventStatus);
+     $eventContentDiv.append($bookBtn);
+     $cardContentDiv.append($eventContentDiv);
+
+    //  append to DOM
+    $resultItems.append($eventResultDiv);
+
+
+    console.log(eventName);
+    console.log(`Event Desciption: ${eventDesciption}`);
+    console.log(`Brought to you by ${eventEl.promoter.description}`);
+    console.log(`This event takes place on ${eventDate}`);
+    console.log(`Is this an 18+ event? ${ageRest}`);
+    console.log(`This event is currently ${eventStatus}`);
+    console.log(`Click here to book ${bookLink}`);
+    console.log(eventImg);
+  }
+  
+
+  
+};
+
+// ------------------------------------------------ END EVENTS SECTION ------------------------------------------------ //
+
 
 function getEventsByHistory(e) {
   //get the text content and set it to the search Input

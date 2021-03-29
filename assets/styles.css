@@ -1,3 +1,14 @@
+body {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+main {
+  flex: 1;
+}
+
+
 
 .ui-datepicker {
   width: 12rem%;
@@ -8,8 +19,6 @@
 .ui-icon {
   width: 16px;
   height: 16px;
-  /***    width:32px;
-    height:32px; ******/
 }
 .ui-datepicker td span,
 .ui-datepicker td a {
@@ -23,14 +32,10 @@
   padding: 10px 10px 25px 10px;
 }
 
-/* * {
-    border: 1px solid red;
-} */
 
 #search-box-container {
     border-radius: 0%;
 }
-
 
 .is-active a {
     background-color: #F5F5F5 !important;
@@ -41,4 +46,17 @@
     background-color: rgb(242,242,242);
 }
 
+/* Events Display Styles */
+.display-events {
+  height: 70vh;
+  overflow: scroll;
+}
 
+.event-card {
+ display: flex;
+ flex-direction: row;
+ justify-content: space-between;
+ align-items: center;
+}
+
+/* End Events Display Styles */
