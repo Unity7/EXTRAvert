@@ -1,14 +1,20 @@
+/* make footer sticky */
 body {
   display: flex;
   min-height: 100vh;
   flex-direction: column;
 }
 
-main {
+#main-container {
   flex: 1;
+  height: 80vh;
+  z-index: 0;
 }
 
-
+footer {
+  z-index: 5;
+}
+/* make footer sticky */
 
 .ui-datepicker {
   width: 12rem%;
@@ -55,8 +61,31 @@ main {
 .event-card {
  display: flex;
  flex-direction: row;
- justify-content: space-between;
  align-items: center;
 }
 
+.card-content {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.event-image-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 200px;
+}
+.event-content {
+  width: 400px;
+
+}
+
+.event-desc {
+  font-size: 15px;
+}
+
+#book-btn {
+  color: #F5F5F5;
+}
 /* End Events Display Styles */

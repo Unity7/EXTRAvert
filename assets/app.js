@@ -349,6 +349,11 @@ function deleteSearchHistory() {
 // function to get events with the ticketmaster API
 function getEvents() {
   console.log("getting events")
+  // make tab highlight the events tab
+  $("#flights-header").removeClass("is-active");
+  $("#hotels-header").removeClass("is-active");
+  $("#events-header").addClass("is-active");
+  removeAll();
   //   get events my by city in asc order from date
 fetch("https://app.ticketmaster.com/discovery/v2/events.json?apikey=5UPSIDMJWuJXOmCp87P78yjbhoxplVMG&startDateTime=2021-03-01T14:00:00Z&city=" + searchInput + "&sort=date,asc")
 .then(response => response.json()
@@ -362,68 +367,45 @@ fetch("https://app.ticketmaster.com/discovery/v2/events.json?apikey=5UPSIDMJWuJX
 
 // function to display results 
 function displayEvents(eventsArr){
-  for(let i = 0; i < 10; i++){
+  let html = "";
+  // loop over the array of events and display the first 15 results
+  for(let i = 0; i < 15; i++){
     let eventEl = eventsArr[i];
     let eventName = eventEl.name;
     let eventDesciption = eventEl.info;
+      if(eventDesciption == undefined){
+        eventDesciption = `Click the book now link for details.`
+      }
    // TODO: condition for if there is no value 
     let eventDate = eventEl.dates.start.localDate;
-    let ageRest = eventEl.ageRestrictions.legalAgeEnforced;
     let eventStatus = eventEl.dates.status.code;
     let bookLink = eventEl.url;
     let eventImg = eventEl.images[0].url;
-
-
-    
-    // create layout containter  
-    $eventResultDiv = $("<div>").addClass("display-results display-events");
-    $cardDiv = $("<div>").addClass("card");
-    $cardContentDiv = $("<div>").addClass("card-content event-card");
-    // append card-content > card > resultDiv
-    $cardDiv.append($cardContentDiv);
-    $eventResultDiv.append($cardDiv);
-
-    // image
-    $imgContainer = $("div").addClass("event-image-container");
-    $eventImg = $("<img>").addClass("event-image").attr("src", eventImg);
-    $imgContainer.append($eventImg);
-    $cardContentDiv.append($imgContainer)
-
-    // event details
-    $eventContentDiv = $("<div>").addClass("event-content");
-    $eventTitle = $("<h3>").addClass("event-title title is-5");
-    $eventDesc = $("<p>").addClass("event-desc");
-    $eventStatus = $("<p>").addClass("event-status");
-    $bookBtn = $("<button>").addClass("button mr-5 is-link");
-     // append event details into the event content div
-     $eventContentDiv.append($eventTitle);
-     $eventContentDiv.append($eventDesc);
-     $eventContentDiv.append($eventStatus);
-     $eventContentDiv.append($bookBtn);
-     $cardContentDiv.append($eventContentDiv);
-
-    //  append to DOM
-    $resultItems.append($eventResultDiv);
-
-
-    console.log(eventName);
-    console.log(`Event Desciption: ${eventDesciption}`);
-    console.log(`Brought to you by ${eventEl.promoter.description}`);
-    console.log(`This event takes place on ${eventDate}`);
-    console.log(`Is this an 18+ event? ${ageRest}`);
-    console.log(`This event is currently ${eventStatus}`);
-    console.log(`Click here to book ${bookLink}`);
-    console.log(eventImg);
+    html += 
+      `<div class="card has-background-light">
+          <div class="card-content event-card">
+            <div class="event-image-container">
+              <img class="event-image"src="${eventImg}" alt="Placeholder image">
+            </div>
+            <div class="event-content">
+              <h3 class="event-title title is-5 has-text-centered">${eventName}</h3>
+              <p class="event-desc">${eventDesciption}</p>
+              <p class="event-date">${eventDate}</p>
+              <p class="event-status"><b>Event Status</b>: ${eventStatus}</p>
+            </div>
+            <button id="book-btn" class="button mr-5 is-link"><a href="${bookLink}" target="_blank">Book Now</a></button>
+          </div>
+        </div>`
   }
-  
-
-  
+  html = `<div class="display display-events">${html}</div>`
+  $resultItems.append(html);
 };
 
 // ------------------------------------------------ END EVENTS SECTION ------------------------------------------------ //
 
 
 function getEventsByHistory(e) {
+  removeAll();
   //get the text content and set it to the search Input
   searchInput = e.target.textContent;
 
@@ -435,6 +417,7 @@ function getEventsByHistory(e) {
 
   //function to execute search by Event
   console.log("Getting Events for " + searchInput);
+  getEvents(searchInput);
 }
 
 //Uses API to get Hotels//
@@ -450,8 +433,10 @@ function displayResults(data) {
 }
 
 //  -----------------------------  Event Listeners ----------------------------- //
+
 $searchButton.on("click", getSearchTerm);
 $flightsBtn.on("click", getFlightDate);
+$eventsBtn.on("click", getEvents)
 $searchHistoryDelete.on("click", deleteSearchHistory);
 $searchItems.on("click", getEventsByHistory);
 
@@ -459,3 +444,5 @@ $searchItems.on("click", getEventsByHistory);
 clearSearchHistory();
 getLS();
 displaySearchHistory(cities);
+
+// Note to Bay: Need to add display to the date picker so it goes away on event click with your remove all function 
