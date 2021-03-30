@@ -354,6 +354,7 @@ function getEvents() {
   $("#hotels-header").removeClass("is-active");
   $("#events-header").addClass("is-active");
   removeAll();
+  removeFlightDate();
   //   get events my by city in asc order from date
 fetch("https://app.ticketmaster.com/discovery/v2/events.json?apikey=5UPSIDMJWuJXOmCp87P78yjbhoxplVMG&startDateTime=2021-03-01T14:00:00Z&city=" + searchInput + "&sort=date,asc")
 .then(response => response.json()
