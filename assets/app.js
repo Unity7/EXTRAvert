@@ -48,7 +48,7 @@ function getSearchTerm() {
 
     // Note: in each function below make you tab's li class active to change tab highlighted
     // getFlights();
-    // getEvents()
+    getEvents(searchInput)
     // getHotels()
   } else if ($searchInput.val() === "") {
     message = "Please enter a city into the search";
@@ -274,6 +274,10 @@ function getFlightDate() {
 
 // ------------------------------------------------ END OF FLIGHTS SECTION ------------------------------------------------ //
 
+
+
+
+
 // ------------------------------------------------ SEARCH INPUT FORMATTING SECTION ------------------------------------------------ //
 
 function capitalizeSearchInput(string) {
@@ -340,15 +344,68 @@ function deleteSearchHistory() {
 
 // ------------------------------------------------ END OF LOCAL STORAGE SECTION ------------------------------------------------ //
 
-//Uses API to get Events//
-function getEvents() {
-  console.log("Getting Events");
 
-  //display Data
-  // displayResults(data);
-}
+// ------------------------------------------------ EVENTS SECTION ------------------------------------------------ //
+// function to get events with the ticketmaster API
+function getEvents() {
+  console.log("getting events")
+  // make tab highlight the events tab
+  $("#flights-header").removeClass("is-active");
+  $("#hotels-header").removeClass("is-active");
+  $("#events-header").addClass("is-active");
+  removeAll();
+  //   get events my by city in asc order from date
+fetch("https://app.ticketmaster.com/discovery/v2/events.json?apikey=5UPSIDMJWuJXOmCp87P78yjbhoxplVMG&startDateTime=2021-03-01T14:00:00Z&city=" + searchInput + "&sort=date,asc")
+.then(response => response.json()
+.then(data => {
+    let eventsArr = data._embedded.events
+    console.log(eventsArr)
+  displayEvents(eventsArr)
+  })
+.catch(error => console.log('error', error)))
+};
+
+// function to display results 
+function displayEvents(eventsArr){
+  let html = "";
+  // loop over the array of events and display the first 15 results
+  for(let i = 0; i < 15; i++){
+    let eventEl = eventsArr[i];
+    let eventName = eventEl.name;
+    let eventDesciption = eventEl.info;
+      if(eventDesciption == undefined){
+        eventDesciption = `Click the book now link for details.`
+      }
+   // TODO: condition for if there is no value 
+    let eventDate = eventEl.dates.start.localDate;
+    let eventStatus = eventEl.dates.status.code;
+    let bookLink = eventEl.url;
+    let eventImg = eventEl.images[0].url;
+    html += 
+      `<div class="card has-background-light">
+          <div class="card-content event-card">
+            <div class="event-image-container">
+              <img class="event-image"src="${eventImg}" alt="Placeholder image">
+            </div>
+            <div class="event-content">
+              <h3 class="event-title title is-5 has-text-centered">${eventName}</h3>
+              <p class="event-desc">${eventDesciption}</p>
+              <p class="event-date">${eventDate}</p>
+              <p class="event-status"><b>Event Status</b>: ${eventStatus}</p>
+            </div>
+            <button id="book-btn" class="button mr-5 is-link"><a href="${bookLink}" target="_blank">Book Now</a></button>
+          </div>
+        </div>`
+  }
+  html = `<div class="display display-events">${html}</div>`
+  $resultItems.append(html);
+};
+
+// ------------------------------------------------ END EVENTS SECTION ------------------------------------------------ //
+
 
 function getEventsByHistory(e) {
+  removeAll();
   //get the text content and set it to the search Input
   searchInput = e.target.textContent;
 
@@ -360,6 +417,7 @@ function getEventsByHistory(e) {
 
   //function to execute search by Event
   console.log("Getting Events for " + searchInput);
+  getEvents(searchInput);
 }
 
 //Uses API to get Hotels//
@@ -375,8 +433,10 @@ function displayResults(data) {
 }
 
 //  -----------------------------  Event Listeners ----------------------------- //
+
 $searchButton.on("click", getSearchTerm);
 $flightsBtn.on("click", getFlightDate);
+$eventsBtn.on("click", getEvents)
 $searchHistoryDelete.on("click", deleteSearchHistory);
 $searchItems.on("click", getEventsByHistory);
 
@@ -384,3 +444,5 @@ $searchItems.on("click", getEventsByHistory);
 clearSearchHistory();
 getLS();
 displaySearchHistory(cities);
+
+// Note to Bay: Need to add display to the date picker so it goes away on event click with your remove all function 
