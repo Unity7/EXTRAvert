@@ -17,7 +17,7 @@ footer {
 /* make footer sticky */
 
 .ui-datepicker {
-  width: 12rem%;
+  width: 12rem;
   height: 12rem;
   margin-left: 50px;
   background-color: rgb(199, 199, 199);
@@ -38,18 +38,17 @@ footer {
   padding: 10px 10px 25px 10px;
 }
 
-
 #search-box-container {
-    border-radius: 0%;
+  border-radius: 0%;
 }
 
 .is-active a {
-    background-color: #F5F5F5 !important;
-    color: #003ea2 !important;
+  background-color: #f5f5f5 !important;
+  color: #003ea2 !important;
 }
 
 #search-history-items div:hover {
-    background-color: rgb(242,242,242);
+  background-color: rgb(242, 242, 242);
 }
 
 /* Events Display Styles */
@@ -59,9 +58,9 @@ footer {
 }
 
 .event-card {
- display: flex;
- flex-direction: row;
- align-items: center;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 
 .card-content {
@@ -78,7 +77,6 @@ footer {
 }
 .event-content {
   width: 400px;
-
 }
 
 .event-desc {
@@ -86,6 +84,17 @@ footer {
 }
 
 #book-btn {
-  color: #F5F5F5;
+  color: #f5f5f5;
 }
-/* End Events Display Styles */
+
+.cardItems {
+  /* Add shadows to create the "card" effect */
+  box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.2);
+  transition: 0.3s;
+  margin: 10px 0px 10px 0px;
+}
+
+/* On mouse-over, add a deeper shadow */
+.cardItems:hover {
+  box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.2);
+}

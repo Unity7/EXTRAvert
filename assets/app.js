@@ -13,16 +13,12 @@ $resultsHeaderSearch = $("#results-header-2");
 $searchHistoryDelete = $("#search-history-trash");
 
 cities = [];
-var searchInput,
+var //User should input city name within the USA.
+  searchInput,
+  //variable used to store formatted version of the user's input
   formattedSearchInput,
-  searchTerm,
-  destinationCity,
-  $flightDate,
-  origin,
-  destination,
-  price,
-  carrier,
-  errorMessage;
+  //variable used to store the flight destination ID used in flights api
+  destinationCity;
 
 //  -----------------------------  Functions ----------------------------- //
 
@@ -48,7 +44,7 @@ function getSearchTerm() {
 
     // Note: in each function below make you tab's li class active to change tab highlighted
     // getFlights();
-    getEvents(searchInput)
+    getEvents(searchInput);
     // getHotels()
   } else if ($searchInput.val() === "") {
     message = "Please enter a city into the search";
@@ -96,13 +92,30 @@ function removeFlightDate() {
   $("#events-header").addClass("is-active");
 }
 
+//function to display loading screen
+
+function displayLoadingScreen() {
+  var message =
+    "<div style='text-align: center;'><img src='https://i.gifer.com/4V0b.gif'></img></div>";
+
+  $messageDiv = $("<div>").addClass("display has-background-white");
+  $messageheader = $("<h2>").addClass("display has-text-primary-light");
+  messageText = "Pending: " + message;
+  $messageheader.append(messageText);
+  $messageDiv.append($messageheader);
+  $resultItems.append($messageDiv);
+}
+
 // ------------------------------------------------ FLIGHTS SECTION ------------------------------------------------ //
 
 //Uses API to get Flights//
 function getFlights() {
+  removeAll();
+  displayLoadingScreen();
   //get the date input
   $flightDate = $("#date-input").val();
 
+  var flightCity;
   //convert date input to YYYY-MM-DD to use in query
   var newFlightDate = moment($flightDate).format("YYYY-MM-DD");
 
@@ -112,17 +125,22 @@ function getFlights() {
     var newCity = searchInput.replace(" ", "%20");
 
     //set the new searchTerm
-    searchTerm = newCity;
+    flightCity = newCity;
   } else {
-    searchTerm = searchInput;
+    flightCity = searchInput;
   }
 
   var placeSettings = {
     async: true,
+    error: function (error) {
+      removeAll();
+      var message = "Please try another city " + error;
+      displayError(message);
+    },
     crossDomain: true,
     url:
       "https://skyscanner-skyscanner-flight-search-v1.p.rapidapi.com/apiservices/autosuggest/v1.0/US/USD/en-US/?query=" +
-      searchTerm,
+      flightCity,
     method: "GET",
     headers: {
       "x-rapidapi-key": "066dae2798mshc488ff29eea61bdp1db94fjsnb26d76bdd42c",
@@ -161,13 +179,17 @@ function getFlights() {
       };
 
       $.ajax(settings).done(function (response) {
-        if (response.Routes[0] === undefined) {
+        if (
+          response.Routes[0] === undefined ||
+          response.Carriers[0].Name === undefined
+        ) {
           message = "Could not find any flights, please try another city";
           displayError(message);
           setTimeout(function () {
             removeAll();
           }, 2000);
         } else {
+          displayLoadingScreen();
           displayFlights(response);
         }
       });
@@ -178,41 +200,42 @@ function getFlights() {
 // ------  displays the flight reponse into the results section ------  //
 function displayFlights(response) {
   removeAll();
-  origin = "LAX";
-  destination = destinationCity.replace("-sky", "");
-  price = response.Routes[0].Price;
-  carrier = response.Carriers[0].Name;
+  var origin = "LAX";
+  var destination = destinationCity.replace("-sky", "");
+  var price = response.Routes[0].Price;
+  var carrier = response.Carriers[0].Name;
+  var $flightDate = $("#date-input").val();
 
-  $divContainer = $("<div>").addClass("display card my-1 py-3 px-3");
+  var $divContainer = $("<div>").addClass("display card my-1 py-3 px-3");
 
   //header
-  $headerDiv = $("<div>").addClass("display card my-1 py-3 px-3");
-  $header = $("<h2>").addClass("display");
-  text = "Cheapest Flight From " + origin + " To " + destination;
+  var $headerDiv = $("<div>").addClass("display card my-1 py-3 px-3");
+  var $header = $("<h2>").addClass("display");
+  var text = "Cheapest Flight From " + origin + " To " + destination;
   $header.append(text);
   $headerDiv.append($header);
   $divContainer.append($headerDiv);
 
   //price
-  $priceDiv = $("<div>").addClass("display card my-1 py-3 px-3");
-  $priceheader = $("<h2>").addClass("display");
-  priceText = "Price: $" + price;
+  var $priceDiv = $("<div>").addClass("display card my-1 py-3 px-3");
+  var $priceheader = $("<h2>").addClass("display");
+  var priceText = "Price: $" + price;
   $priceheader.append(priceText);
   $priceDiv.append($priceheader);
   $divContainer.append($priceDiv);
 
   //carrier
-  $carrierDiv = $("<div>").addClass("display card my-1 py-3 px-3");
-  $carrierheader = $("<h2>").addClass("display");
-  carrierText = "Carrier: " + carrier;
+  var $carrierDiv = $("<div>").addClass("display card my-1 py-3 px-3");
+  var $carrierheader = $("<h2>").addClass("display");
+  var carrierText = "Carrier: " + carrier;
   $carrierheader.append(carrierText);
   $carrierDiv.append($carrierheader);
   $divContainer.append($carrierDiv);
 
   //departure date
-  $dateDiv = $("<div>").addClass("display card my-1 py-3 px-3");
-  $dateheader = $("<h2>").addClass("display");
-  dateText = "Departure Date: " + $flightDate;
+  var $dateDiv = $("<div>").addClass("display card my-1 py-3 px-3");
+  var $dateheader = $("<h2>").addClass("display");
+  var dateText = "Departure Date: " + $flightDate;
   $dateheader.append(dateText);
   $dateDiv.append($dateheader);
   $divContainer.append($dateDiv);
@@ -224,7 +247,7 @@ function displayFlights(response) {
 // ------ Function to create date picker for Flights ------ //
 function getFlightDate() {
   if (searchInput === undefined || searchInput === "") {
-    errorMessage = "Please Select A City";
+    var errorMessage = "Please Select A City";
     displayError(errorMessage);
     setTimeout(function () {
       removeAll();
@@ -244,10 +267,10 @@ function getFlightDate() {
     dateInput.css("width", "25%");
 
     //sets the default value to today's date
-    var todayDate = moment().format("MM/DD/YYYY");
+    var todayDate = moment().add(1, "days").format("MM/DD/YYYY");
     dateInput.val(todayDate);
     dateInput.datepicker({
-      minDate: 0,
+      minDate: 1,
     });
 
     dateDiv.append(dateInput);
@@ -274,10 +297,6 @@ function getFlightDate() {
 
 // ------------------------------------------------ END OF FLIGHTS SECTION ------------------------------------------------ //
 
-
-
-
-
 // ------------------------------------------------ SEARCH INPUT FORMATTING SECTION ------------------------------------------------ //
 
 function capitalizeSearchInput(string) {
@@ -286,14 +305,18 @@ function capitalizeSearchInput(string) {
     var words = searchInput.split(" ");
     for (var i = 0; i < words.length; i++) {
       var stringWord = words[i];
-      var newWords = stringWord.charAt(0).toUpperCase() + stringWord.slice(1);
+      var lowerString = stringWord.slice(1);
+      lowerString = lowerString.toLowerCase();
+      var newWords = stringWord.charAt(0).toUpperCase() + lowerString;
       formattedSearchInput += newWords;
       formattedSearchInput += " ";
     }
     formattedSearchInput = formattedSearchInput.slice(0, -1);
     return formattedSearchInput;
   } else {
-    formattedSearchInput = string.charAt(0).toUpperCase() + string.slice(1);
+    var lowerString = string.slice(1);
+    lowerString = lowerString.toLowerCase();
+    formattedSearchInput = string.charAt(0).toUpperCase() + lowerString;
     return formattedSearchInput;
   }
 }
@@ -344,11 +367,9 @@ function deleteSearchHistory() {
 
 // ------------------------------------------------ END OF LOCAL STORAGE SECTION ------------------------------------------------ //
 
-
 // ------------------------------------------------ EVENTS SECTION ------------------------------------------------ //
 // function to get events with the ticketmaster API
 function getEvents() {
-  console.log("getting events")
   // make tab highlight the events tab
   $("#flights-header").removeClass("is-active");
   $("#hotels-header").removeClass("is-active");
@@ -356,35 +377,47 @@ function getEvents() {
   removeAll();
   removeFlightDate();
   //   get events my by city in asc order from date
-fetch("https://app.ticketmaster.com/discovery/v2/events.json?apikey=5UPSIDMJWuJXOmCp87P78yjbhoxplVMG&startDateTime=2021-03-01T14:00:00Z&city=" + searchInput + "&sort=date,asc")
-.then(response => response.json()
-.then(data => {
-    let eventsArr = data._embedded.events
-    console.log(eventsArr)
-  displayEvents(eventsArr)
-  })
-.catch(error => console.log('error', error)))
-};
+  fetch(
+    "https://app.ticketmaster.com/discovery/v2/events.json?apikey=5UPSIDMJWuJXOmCp87P78yjbhoxplVMG&startDateTime=2021-03-01T14:00:00Z&city=" +
+      searchInput +
+      "&sort=date,asc"
+  ).then((response) =>
+    response
+      .json()
+      .then((data) => {
+        let eventsArr = data._embedded.events;
+        displayLoadingScreen();
+        displayEvents(eventsArr);
+      })
+      .catch((error) => {
+        message = "Could not find any events";
+        displayError(message);
+        setTimeout(function () {
+          removeAll();
+        }, 2000);
+      })
+  );
+}
 
-// function to display results 
-function displayEvents(eventsArr){
+// function to display results
+function displayEvents(eventsArr) {
+  removeAll();
   let html = "";
   // loop over the array of events and display the first 15 results
-  for(let i = 0; i < 15; i++){
+  for (let i = 0; i < 15; i++) {
     let eventEl = eventsArr[i];
     let eventName = eventEl.name;
     let eventDesciption = eventEl.info;
-      if(eventDesciption == undefined){
-        eventDesciption = `Click the book now link for details.`
-      }
-   // TODO: condition for if there is no value 
+    if (eventDesciption == undefined) {
+      eventDesciption = `Click the book now link for details.`;
+    }
+    // TODO: condition for if there is no value
     let eventDate = eventEl.dates.start.localDate;
     let eventStatus = eventEl.dates.status.code;
     let bookLink = eventEl.url;
     let eventImg = eventEl.images[0].url;
-    html += 
-      `<div class="card has-background-light">
-          <div class="card-content event-card">
+    html += `<div class="card has-background-light">
+          <div class="card-content event-card cardItems">
             <div class="event-image-container">
               <img class="event-image"src="${eventImg}" alt="Placeholder image">
             </div>
@@ -394,16 +427,15 @@ function displayEvents(eventsArr){
               <p class="event-date">${eventDate}</p>
               <p class="event-status"><b>Event Status</b>: ${eventStatus}</p>
             </div>
-            <button id="book-btn" class="button mr-5 is-link"><a href="${bookLink}" target="_blank">Book Now</a></button>
+            <button id="book-btn" class="button mr-5 linkColor"><a href="${bookLink}" target="_blank">Book Now</a></button>
           </div>
-        </div>`
+        </div>`;
   }
-  html = `<div class="display display-events">${html}</div>`
+  html = `<div class="display display-events">${html}</div>`;
   $resultItems.append(html);
-};
+}
 
 // ------------------------------------------------ END EVENTS SECTION ------------------------------------------------ //
-
 
 function getEventsByHistory(e) {
   removeAll();
@@ -417,7 +449,6 @@ function getEventsByHistory(e) {
   $(e.target).addClass("has-background-info-light");
 
   //function to execute search by Event
-  console.log("Getting Events for " + searchInput);
   getEvents(searchInput);
 }
 
@@ -437,7 +468,7 @@ function displayResults(data) {
 
 $searchButton.on("click", getSearchTerm);
 $flightsBtn.on("click", getFlightDate);
-$eventsBtn.on("click", getEvents)
+$eventsBtn.on("click", getEvents);
 $searchHistoryDelete.on("click", deleteSearchHistory);
 $searchItems.on("click", getEventsByHistory);
 
@@ -446,4 +477,4 @@ clearSearchHistory();
 getLS();
 displaySearchHistory(cities);
 
-// Note to Bay: Need to add display to the date picker so it goes away on event click with your remove all function 
+// Note to Bay: Need to add display to the date picker so it goes away on event click with your remove all function
