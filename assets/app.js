@@ -259,7 +259,7 @@ function getFlightDate() {
     var div = $("<div>").addClass(
       "datedisplay is-full column has-background-light"
     );
-
+    removeAll();
     var dateDiv = $("<div>").addClass("datedisplay has-background-light");
 
     var dateInput = $("<input>").addClass("datedisplay has-background-light");
@@ -477,4 +477,3 @@ clearSearchHistory();
 getLS();
 displaySearchHistory(cities);
 
-// Note to Bay: Need to add display to the date picker so it goes away on event click with your remove all function

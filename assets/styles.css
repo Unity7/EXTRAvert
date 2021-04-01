@@ -1,20 +1,35 @@
-/* make footer sticky */
-body {
-  display: flex;
-  min-height: 100vh;
-  flex-direction: column;
-}
+
 
 #main-container {
-  flex: 1;
-  height: 80vh;
-  z-index: 0;
+  height: calc(80vh - 50px);
+
 }
 
-footer {
-  z-index: 5;
+header {
+ display: flex;
+ flex-direction: row;
+ justify-content: space-between;
+ align-items: center;
 }
-/* make footer sticky */
+
+.logo{
+  height: 150px;
+  width: auto;
+  margin-left: 10%;
+}
+header h1 {
+  margin-right: 30%;
+  color: #9353fe;
+  font-weight: 500;
+  letter-spacing: 0.0625em;
+}
+
+
+.two-thirds-col {
+  background-color: #ff4447;
+  overflow: hidden;
+}
+
 
 .ui-datepicker {
   width: 12rem;
@@ -97,4 +112,45 @@ footer {
 /* On mouse-over, add a deeper shadow */
 .cardItems:hover {
   box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.2);
+}
+
+
+/* ----------------------media queries---------------------- */
+@media only screen and (max-width: 750px) {
+  .footer {
+    display: none;
+  }
+
+  header {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+   }
+   
+   .logo{
+     height: 150px;
+     width: auto;
+     margin: 10px 0;
+     
+   }
+
+   header h1 {
+    color: #9353fe;
+    font-weight: 500;
+    letter-spacing: 0.0625em;
+    text-align: center;
+    margin: 0;
+  }
+
+  .event-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .event-content {
+    padding: 10px 0;
+  }
 }
