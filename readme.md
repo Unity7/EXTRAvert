@@ -3,12 +3,7 @@
 Purpose:
 A website that provide users with the ability to search for events, flights, and hotels within a city. It allows the user to quickly browse in order to make a decision on planning a trip.
 
-Built With:
-HTML
-CSS
-Bulma CSS
-Javascript
-JQuery
+Built With: HTML, CSS, Bulma CSS, Javascript, JQuery
 
 Website:
 
