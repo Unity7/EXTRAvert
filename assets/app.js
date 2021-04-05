@@ -187,6 +187,7 @@ function getFlights() {
           displayError(message);
           setTimeout(function () {
             removeAll();
+            removeFlightDate();
           }, 2000);
         } else {
           displayLoadingScreen();
@@ -253,13 +254,14 @@ function getFlightDate() {
       removeAll();
     }, 2000);
   } else {
+    removeAll();
     $(".is-active").removeClass("is-active");
     $("#flights-header").addClass("is-active");
     //creates div for header
     var div = $("<div>").addClass(
       "datedisplay is-full column has-background-light"
     );
-    removeAll();
+
     var dateDiv = $("<div>").addClass("datedisplay has-background-light");
 
     var dateInput = $("<input>").addClass("datedisplay has-background-light");
@@ -454,7 +456,14 @@ function getEventsByHistory(e) {
 
 //Uses API to get Hotels//
 function getHotels() {
-  console.log("Getting Hotels");
+  removeAll();
+  removeFlightDate();
+  var message = "Service Temporary Unavailable";
+  displayError(message);
+  setTimeout(function () {
+    removeAll();
+    removeFlightDate();
+  }, 2000);
 
   //display Data
   // displayResults(data);
@@ -471,9 +480,9 @@ $flightsBtn.on("click", getFlightDate);
 $eventsBtn.on("click", getEvents);
 $searchHistoryDelete.on("click", deleteSearchHistory);
 $searchItems.on("click", getEventsByHistory);
+$hotelsBtn.on("click", getHotels);
 
 //On page load functions to be called
 clearSearchHistory();
 getLS();
 displaySearchHistory(cities);
-
